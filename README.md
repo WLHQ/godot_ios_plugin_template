@@ -1,3 +1,7 @@
+# WARNING BRANCH IS EXPERIMENTAL
+
+This branch of the repo has features that may not work & outright break. Currently not tested if it works.
+
 # Godot iOS Plugin template
 
 This repo contains a *starter* Xcode and SCons configuration to build Godot plugin for iOS.
