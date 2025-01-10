@@ -6,8 +6,8 @@
 //  Copyright © 2020 Godot. All rights reserved.
 //
 
-#ifndef godot_plugin_implementation_h
-#define godot_plugin_implementation_h
+#ifndef GODOT_PLUGIN_IMPLEMENTATION_H
+#define GODOT_PLUGIN_IMPLEMENTATION_H
 
 #include "core/version.h"
 
@@ -23,11 +23,9 @@ class PluginExample : public Object {
     static void _bind_methods();
     
 public:
-    
     Error foo();
-    
     PluginExample();
     ~PluginExample();
 };
 
-#endif /* godot_plugin_implementation_h */
+#endif /* GODOT_PLUGIN_IMPLEMENTATION_H */
