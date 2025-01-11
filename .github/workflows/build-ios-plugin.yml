@@ -1,0 +1,77 @@
+name: Build iOS Plugin
+
+on:
+  push:
+    branches:
+      - AudioManager2
+  pull_request:
+
+jobs:
+  build-ios:
+    name: Build iOS Plugin
+    runs-on: macos-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Xcode
+      - name: Set up Xcode environment
+        run: |
+          sudo xcode-select -switch /Applications/Xcode.app
+          xcodebuild -version
+
+      # Step 3: Build the iOS plugin
+      - name: Build iOS Plugin
+        run: |
+          cd godot_plugin
+          xcodebuild clean build \
+            -project godot_plugin.xcodeproj \
+            -scheme godot_plugin \
+            -configuration Release \
+            -sdk iphoneos \
+            BUILD_DIR=../bin/ios_build \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      # Step 4: Archive build artifacts
+      - name: Upload plugin artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-plugin-build
+          path: bin/ios_build/Release-iphoneos/
+
+  test-ios:
+    name: Test iOS Plugin in Godot Project
+    runs-on: macos-latest
+    needs: build-ios
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Download the plugin artifacts
+      - name: Download plugin artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ios-plugin-build
+
+      # Step 3: Integrate the plugin into a Godot project
+      - name: Integrate Plugin
+        run: |
+          mkdir -p godot/plugins/ios
+          cp -R bin/ios_build/Release-iphoneos/* godot/plugins/ios
+
+      # Step 4: Validate the plugin in a Godot project
+      - name: Run Godot Export for iOS
+        run: |
+          godot --export "iOS" godot/exported_project.xcodeproj
+
+      # Step 5: Upload test results or logs
+      - name: Upload Godot Export Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: godot-export-logs
+          path: godot/exported_project.xcodeproj/
