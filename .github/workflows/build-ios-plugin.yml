@@ -22,12 +22,7 @@ jobs:
           sudo xcode-select -switch /Applications/Xcode.app
           xcodebuild -version
 
-      # Step 3: List Xcode Schemes (Debugging Step)
-      - name: List Xcode Schemes
-        run: |
-          xcodebuild -list -project godot_plugin.xcodeproj
-
-      # Step 4: Build the plugin
+      # Step 3: Build the plugin
       - name: Build iOS Plugin
         run: |
           xcodebuild clean build \
@@ -37,11 +32,15 @@ jobs:
             -sdk iphoneos \
             BUILD_DIR=./bin/ios_build \
             ONLY_ACTIVE_ARCH=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            HEADER_SEARCH_PATHS="godot" \
+            IPHONEOS_DEPLOYMENT_TARGET=12.0
 
-      # Step 5: Archive build artifacts
+      # Step 4: Archive build artifacts
       - name: Upload plugin artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ios-plugin-build
+          path: bin/ios_build/Release-iphoneos/
+
           path: bin/ios_build/Release-iphoneos/
