@@ -1,6 +1,6 @@
 # WARNING BRANCH IS EXPERIMENTAL
 
-This branch of the repo has features that may not work & outright break. Currently not tested.
+This branch of the repo has features that may not work & outright break.
 
 # Godot iOS Plugin template
 
