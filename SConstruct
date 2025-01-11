@@ -162,7 +162,8 @@ else:
        env.Append(CPPPATH=[
         '.', 
         'godot', 
-        'godot/platform/ios',
+        'godot/core/config',
+	'godot/platform/ios',
     ])
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
