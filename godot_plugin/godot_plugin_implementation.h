@@ -19,13 +19,17 @@
 
 class PluginExample : public Object {
     GDCLASS(PluginExample, Object);
-    
+
     static void _bind_methods();
-    
+
+private:
+    bool is_audio_cleanup_done = false;
+
 public:
-    
-    Error foo();
-    
+    void signal_audio_cleanup_done(); // GDScript signals cleanup completion.
+    bool is_cleanup_complete() const; // Check if cleanup is done.
+    void handle_termination();        // Handle termination logic.
+
     PluginExample();
     ~PluginExample();
 };

@@ -6,26 +6,47 @@
 //  Copyright © 2020 Godot. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 #import "godot_plugin.h"
-#import "godot_plugin_implementation.h"
 
-#import "core/config/engine.h"
-
-PluginExample *plugin;
+// Define a termination handler
+static void register_lifecycle_hooks();
 
 void godot_plugin_init() {
-    NSLog(@"init plugin");
+    NSLog(@"Init plugin");
 
     plugin = memnew(PluginExample);
     Engine::get_singleton()->add_singleton(Engine::Singleton("PluginExample", plugin));
+
+    // Register lifecycle hooks
+    register_lifecycle_hooks();
 }
 
 void godot_plugin_deinit() {
-    NSLog(@"deinit plugin");
-    
+    NSLog(@"Deinit plugin");
+
     if (plugin) {
-       memdelete(plugin);
-   }
+        memdelete(plugin);
+    }
+}
+
+static void handle_termination(NSNotification *notification) {
+    NSLog(@"App is terminating...");
+    if (plugin) {
+        plugin->handle_termination(); // Call your plugin's termination handler.
+    }
+
+    // Notify Godot's MainLoop about termination (optional)
+    if (OS::get_singleton()->get_main_loop()) {
+        OS::get_singleton()->get_main_loop()->notification(MainLoop::NOTIFICATION_WM_CLOSE_REQUEST);
+    }
+}
+
+static void register_lifecycle_hooks() {
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+        handle_termination(notification);
+    }];
 }
