@@ -42,5 +42,3 @@ jobs:
         with:
           name: ios-plugin-build
           path: bin/ios_build/Release-iphoneos/
-
-          path: bin/ios_build/Release-iphoneos/
